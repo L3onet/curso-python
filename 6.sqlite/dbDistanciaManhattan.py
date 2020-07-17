@@ -42,13 +42,48 @@ class dbDistanciaManhattan:
 		for distancia in resultado:
 			print(distancia)
 
+		# Guardamos los cambios haciendo un commit
+		self.__conexion.commit()
+
+	def actualizarRegistro(self, A, B, C, D):
+		# Creamos el cursor
+		cursor = self.__conexion.cursor()
+
+		dm = PlanoCartesiano()
+		dm.calcularDistanciaManhattan(C, D)
+		distancia = dm.getDistanciaManhattan()
+
+		sql = "UPDATE dbDistanciaManhattan SET X1 = " + str(C.getX()) + " , Y1 = " + str(C.getY()) + " , X2 = " + str(D.getX()) + " , Y2 = " + str(D.getY()) + ", distanciaManhattan = " + str(distancia) + " WHERE X1 = " + str(A.getX()) + " AND Y1 = " + str(A.getY()) + " AND X2 = " + str(B.getX()) + " AND Y2 = " + str(B.getY())
+		#print(sql)
+
+		cursor.execute(sql)
+		self.__conexion.commit()
+
+	def borrarRegistro(self, A, B):
+		# Creamos el cursor
+		cursor = self.__conexion.cursor()
+
+		sql = "DELETE FROM dbDistanciaManhattan WHERE X1 = " + str(A.getX()) + " AND Y1 = " + str(A.getY()) + " AND X2 = " + str(B.getX()) + " AND Y2 = " + str(B.getY())
+		#print(sql)
+		cursor.execute(sql)
+		self.__conexion.commit()
+
+	def cerrarConexion(self):
+		self.__conexion.close()
 
 def main():
 	db = dbDistanciaManhattan()
 	#db.crearTabla()
 	#db.InsertarRegistros(3,6,7,8)
 	#db.InsertarRegistros(7,9,15,23)
-	db.buscarRegistros(8)
+	#db.buscarRegistros(8)
+	A = Punto(3,6)
+	B = Punto(7,8)
+	C = Punto(9,2)
+	D = Punto(13,23)
+	#db.actualizarRegistro(A, B, C, D)
+	db.borrarRegistro(C,D)
+	db.cerrarConexion()
 
 if __name__ == '__main__':
 	main()
